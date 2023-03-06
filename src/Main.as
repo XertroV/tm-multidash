@@ -1,15 +1,7 @@
-bool UserHasPermissions = false;
-
-void Main() {
-    startnew(MainCoro);
-}
-
-void MainCoro() {
-    while (true) {
-        yield();
-    }
-}
-
+/**
+ * This is mostly just a copy of relevant functions from tm-dashboard, adapated to work with multiple vehicles.
+ * Inputs are shown next to each car.
+ */
 int g_NvgFont = nvg::LoadFont("DroidSans.ttf", true, true);
 
 
