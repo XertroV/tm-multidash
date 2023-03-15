@@ -5,7 +5,7 @@ This is a quick and dirty repurpose of that code to draw inputs for each vehicle
 
 License: MIT
 
-Authors: Melissa Geels, XertroV
+Authors: XertroV, based on [work by Miss](https://github.com/codecat/tm-dashboard)
 
 Suggestions/feedback: @XertroV on Openplanet discord
 
