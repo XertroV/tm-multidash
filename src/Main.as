@@ -9,12 +9,19 @@ int g_NvgFont = nvg::LoadFont("DroidSans.ttf", true, true);
 */
 void Render() {
     if (!ShowWindow) return;
-    if (GetApp().GameScene is null) return;
+    auto scene = GetApp().GameScene;
+    if (scene is null) return;
     nvg::Reset();
     nvg::FontFace(g_NvgFont);
-    auto @viss = VehicleState::GetAllVis(GetApp().GameScene);
+    auto @viss = VehicleState::GetAllVis(scene);
+    auto localPlayer = GetLocalPlayer(GetApp());
+    auto playerVisId = GetPlayerVisId(scene, localPlayer);
     for (uint i = 0; i < viss.Length; i++) {
         auto vis = viss[i];
+        // don't show inputs for the vis the player controls
+        if (playerVisId == Dev::GetOffsetUint32(vis, 0)) {
+            continue;
+        }
         auto ssPos = Camera::ToScreen(vis.AsyncState.Position);
         auto abovePos = Camera::ToScreen(vis.AsyncState.Position + vec3(0, .1, 0));
         if (ssPos.z > 0 || abovePos.z > 0) continue;
@@ -25,6 +32,21 @@ void Render() {
         nvg::Translate(ssPos.xy);
         DrawInputs(vis.AsyncState, vec2(scale * 2., scale) * screenScale);
         nvg::ResetTransform();
+    }
+}
+
+uint GetPlayerVisId(ISceneVis@ scene, CSmPlayer@ player) {
+    if (player is null) return 0x0FF00000;
+    auto vis = VehicleState::GetVis(scene, player);
+    if (vis is null) return 0x0FF00000;
+    return Dev::GetOffsetUint32(vis, 0x0);
+}
+
+CSmPlayer@ GetLocalPlayer(CGameCtnApp@ app) {
+    try {
+        return cast<CSmPlayer>(app.CurrentPlayground.GameTerminals[0].ControlledPlayer);
+    } catch {
+        return null;
     }
 }
 
